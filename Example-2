@@ -33,6 +33,8 @@ def is_prime(num):
         if num % factor == 0:
             return False
     return True if num != 1 else False
+    # 一行表达式,XX为真时返回if前的c，否则返回b
+    # c if XX else b
 print(is_prime(1))
 ''''''
 
