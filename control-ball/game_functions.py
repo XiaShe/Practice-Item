@@ -46,7 +46,7 @@ def check_speed_events(event, ai_settings):
     elif event.key == pygame.K_ESCAPE:
         sys.exit()
 
-def update_screen(screen, ai_settings, ball):
+def update_screen(screen, ai_settings, ball, bg_color):
     '''限制小球运动范围和刷新窗口'''
     #窗口最小化时停止运动，小球碰壁反弹
     if pygame.display.get_active():
@@ -60,8 +60,20 @@ def update_screen(screen, ai_settings, ball):
         if ball.ballrect.bottom > ai_settings.screen_height and ball.ballrect.bottom + ai_settings.speed[1] > ball.ballrect.bottom:#使小球不会卡在边缘上
             ai_settings.speed[1] = - ai_settings.speed[1]
     # 将color填充为背景色
-    screen.fill(ai_settings.color)
+    color(bg_color, ball, ai_settings)
+    #screen.fill(ai_settings.color)
+    screen.fill(bg_color)
     #将ball绘制在ballrect之上，让图像随着rect移动而移动
     screen.blit(ball.image, ball.ballrect)
     pygame.display.update()
     #pygame.display.flip() 比上面慢
+
+def color(bg_color, ball, ai_settings):
+    '''颜色控制'''
+    bg_color.r = RGBChannel(ball.ballrect.left * 255 / ai_settings.screen_width)#水平距离
+    bg_color.g = RGBChannel(ball.ballrect.top * 255 / ai_settings.screen_height)#垂直距离
+    bg_color.b = RGBChannel(min(ai_settings.speed[0], ai_settings.speed[1]) * 255 / max(ai_settings.speed[0], ai_settings.speed[1],1))#最小速度/最大速度
+
+def RGBChannel(a):
+    '''将颜色参数限定为0 - 255之间的整数'''
+    return 0 if a < 0 else (255 if a > 255 else int(a))
